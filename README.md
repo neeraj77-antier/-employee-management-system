@@ -1,228 +1,216 @@
 # Employee Management Platform
 
-A full-stack Employee Management System built with **NestJS** (backend) and **React + TypeScript** (frontend), using **MySQL** as the database.
+A comprehensive, full-stack Employee Management System designed to handle authenticated employee workflows, attendance tracking, payroll generation, and performance reviews. Built with **NestJS** and **React**.
+
+---
 
 ## 🚀 Features
 
-- **Authentication & Authorization**: JWT-based auth with role-based access control (RBAC)
-- **Employee Management**: Complete CRUD operations for employee lifecycle
-- **Attendance Tracking**: Clock-in/out functionality
-- **Leave Management**: Request and approval workflows
-- **Payroll System**: Salary generation and payslip management
-- **Performance Reviews**: Rating and feedback system
-- **Role-Based Dashboards**: Separate views for Admin, Manager, and Employee
+- **Role-Based Access Control (RBAC)**: Distinct dashboards and permissions for **Admin**, **Manager**, and **Employee**.
+- **Employee Management**: Full lifecycle management (Onboarding, Editing, Removal).
+- **Attendance System**: Real-time Clock-In/Clock-Out with daily logging.
+- **Payroll Automation**: Monthly salary calculation, slip generation, and PDF printing.
+- **Leave Management**: Request, Approve, or Reject leave applications.
+- **Performance Reviews**: Periodic evaluations and feedback storage.
+- **Secure Authentication**: JWT-based stateless authentication with OTP verification.
 
-## 📋 Tech Stack
+---
+
+## 🛠️ Tech Stack
 
 ### Backend
 
-- **Framework**: NestJS
+- **Framework**: [NestJS](https://nestjs.com/) (Node.js)
 - **Database**: MySQL 8.0
 - **ORM**: TypeORM
-- **Authentication**: Passport JWT
-- **Validation**: class-validator
+- **Authentication**: Passport.js + JWT
+- **Language**: TypeScript
 
 ### Frontend
 
-- **Framework**: React 18 + TypeScript
-- **Build Tool**: Vite
+- **Framework**: [React](https://reactjs.org/) (Vite)
 - **State Management**: Redux Toolkit
-- **Styling**: TailwindCSS
+- **Styling**: Tailwind CSS + SCSS
 - **Forms**: Formik + Yup
 - **HTTP Client**: Axios
 
-## 🛠️ Setup Instructions
+### DevOps
+
+- **Containerization**: Docker & Docker Compose
+- **Reverse Proxy**: Nginx (Production)
+
+---
+
+## 📋 Assumptions & Key Configurations
+
+1.  **Static OTP**:
+    - For demonstration and ease of testing, the OTP (One-Time Password) is **static**.
+    - **Value**: `123456`
+    - This is handled in the backend (`AuthService`) and is required for both Registration and Login.
+2.  **Default Roles**:
+    - The system supports `ADMIN`, `MANAGER`, and `EMPLOYEE`.
+    - New self-registered users prefer the `EMPLOYEE` role by default unless changed in the database.
+3.  **Database**:
+    - The system expects a MySQL database.
+    - Default port in Docker: `3306`.
+    - Default local port: `3306` (or `3307` if configured in `.env`).
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- Docker & Docker Compose
-- npm or yarn
+- Node.js (v18 or v20)
+- Docker & Docker Compose (optional, but recommended)
+- MySQL (if running locally without Docker)
 
-### Environment Variables
+---
 
-Create a `.env` file in the root directory:
+### Option 1: Run with Docker (Recommended)
 
-```env
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=rootpassword
-DB_NAME=employee_db
+This method ensures consistency across environments.
 
-# Backend Configuration
-BACKEND_PORT=3000
-JWT_SECRET=supersecretkey123
+1.  **Clone the repository:**
 
-# Frontend Configuration
-FRONTEND_PORT=5173
-```
+    ```bash
+    git clone <repository-url>
+    cd <repository-folder>
+    ```
 
-### Running with Docker (Recommended)
+2.  **Set up Environment Variables:**
+    Create a `.env` file in the root directory:
+
+    ```ini
+    # Database
+    DB_HOST=mysql
+    DB_PORT=3306
+    DB_USER=root
+    DB_PASSWORD=rootpassword
+    DB_NAME=employee_db
+
+    # Backend
+    BACKEND_PORT=3000
+    JWT_SECRET=supersecretkey123
+
+    # Frontend
+    FRONTEND_PORT=5173
+    ```
+
+3.  **Run the production build:**
+
+    ```bash
+    docker compose -f docker-compose.prod.yml up -d
+    ```
+
+4.  **Access the Application:**
+    - **Frontend**: http://localhost
+    - **Backend API**: http://localhost/api
+
+---
+
+### Option 2: Run Locally (Development)
+
+If you prefer to run services individually without Docker Compose.
+
+#### 1. Database Setup
+
+Ensure you have a MySQL instance running. You can use the provided `docker-compose.yml` just for the database:
 
 ```bash
-# Start all services (MySQL, Backend, Frontend)
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop all services
-docker-compose down
+docker compose up mysql -d
 ```
 
-The application will be available at:
-
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3000
-- **MySQL**: localhost:3306
-
-### Running Locally (Development)
-
-#### 1. Start MySQL Database
-
-```bash
-docker-compose up mysql -d
-```
+_Note: This maps MySQL to localhost:3306 (or check docker-compose.yml for mapped port)._
 
 #### 2. Backend Setup
 
-```bash
-cd backend
-npm install
-npm run start:dev
-```
+1.  Navigate to `backend`:
+    ```bash
+    cd backend
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Configure `backend/.env` (ensure DB_HOST is `localhost`):
+    ```ini
+    DB_HOST=localhost
+    DB_PORT=3306
+    ...
+    ```
+4.  Start server:
+    ```bash
+    npm run start:dev
+    ```
+    Server runs at: `http://localhost:3000`
 
 #### 3. Frontend Setup
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+1.  Navigate to `frontend`:
+    ```bash
+    cd frontend
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Start dev server:
+    ```bash
+    npm run dev
+    ```
+    App runs at: `http://localhost:5173`
+
+---
+
+## ☁️ Deployment (AWS EC2)
+
+For deploying this application to an AWS EC2 instance, we have prepared a specific guide.
+
+**👉 [Read the AWS Deployment Guide](./DEPLOY_GUIDE_AWS.md)**
+
+This guide covers:
+
+- Setting up an Amazon Linux 2023 instance
+- Installing Docker
+- Configuring Security Groups
+- Deploying the `docker-compose.prod.yml` stack
+
+---
 
 ## 📁 Project Structure
 
-```
-/data/Test/
-├── backend/                 # NestJS Backend
+```bash
+├── backend/                # NestJS Application
 │   ├── src/
-│   │   ├── auth/           # Authentication module
-│   │   ├── users/          # Users module
-│   │   ├── employees/      # Employees module
-│   │   ├── departments/    # Departments module
-│   │   ├── attendance/     # Attendance module
-│   │   ├── leaves/         # Leave management
-│   │   ├── payroll/        # Payroll module
-│   │   └── performance/    # Performance reviews
-│   └── Dockerfile
-├── frontend/               # React Frontend
+│   │   ├── auth/           # Login/Register & 123456 OTP Logic
+│   │   ├── employees/      # CRUD for Employee profiles
+│   │   ├── attendance/     # Check-in/Check-out logic
+│   │   ├── payroll/        # Salary processing
+│   │   └── ...
+│   └── Dockerfile.prod     # Production Dockerfile
+├── frontend/               # React Application
 │   ├── src/
-│   │   ├── api/           # Axios configuration
-│   │   ├── components/    # Reusable components
-│   │   ├── layouts/       # Layout components
-│   │   ├── pages/         # Page components
-│   │   ├── store/         # Redux store
-│   │   ├── hooks/         # Custom hooks
-│   │   └── constants/     # Constants & config
-│   └── Dockerfile
-├── docker-compose.yml
-└── .env
+│   │   ├── pages/          # Screens (Login, Dashboard, Payroll, etc.)
+│   │   ├── components/     # Reusable UI components
+│   │   ├── store/          # Redux Global State
+│   │   └── services/       # API call handlers
+│   ├── nginx.conf          # Nginx Proxy Config
+│   └── Dockerfile.prod     # Production Dockerfile
+├── docker-compose.yml      # Local Dev Orchestration
+├── docker-compose.prod.yml # Production Orchestration
+└── DEPLOY_GUIDE_AWS.md     # AWS Deployment Instructions
 ```
 
-## 🔐 Default Credentials
+## 🔐 Default Credentials & Seeding
 
-Since this is a development setup, you'll need to seed the database with a user. You can do this by:
+**To create an optional ADMIN user initially:**
 
-1. Creating a user via the backend API
-2. Or manually inserting into the database
+You can manually insert a user into the `users` table or use the Registration page and then manually update the role in the database to `ADMIN`.
 
-Example user creation (you can use a tool like Postman or curl):
+**Default Login Flow:**
 
-```bash
-# This endpoint would need to be implemented in the backend
-POST http://localhost:3000/users
-Content-Type: application/json
-
-{
-  "email": "admin@example.com",
-  "password": "admin123",
-  "role": "ADMIN"
-}
-```
-
-**Note**: The password will be hashed automatically by bcrypt before storage.
-
-## 🎨 User Roles
-
-- **ADMIN**: Full access to all features
-- **MANAGER**: Can manage team members, approve leaves, view performance
-- **EMPLOYEE**: Can view own data, request leaves, clock in/out
-
-## 📊 Database Schema
-
-The system uses the following main entities:
-
-- `users` - Authentication and user roles
-- `employees` - Employee profile information
-- `departments` - Organizational structure
-- `attendance` - Daily attendance records
-- `leave_requests` - Leave management
-- `payroll` - Salary and payroll data
-- `performance_reviews` - Performance ratings
-
-## 🚧 Development
-
-### Backend Development
-
-```bash
-cd backend
-npm run start:dev    # Start with hot-reload
-npm run build        # Build for production
-npm run test         # Run tests
-```
-
-### Frontend Development
-
-```bash
-cd frontend
-npm run dev          # Start dev server
-npm run build        # Build for production
-npm run preview      # Preview production build
-```
-
-## 📝 API Documentation
-
-Once the backend is running, Swagger documentation will be available at:
-
-```
-http://localhost:3000/api
-```
-
-_(Note: Swagger setup needs to be completed)_
-
-## 🔧 Troubleshooting
-
-### Database Connection Issues
-
-- Ensure MySQL container is running: `docker-compose ps`
-- Check database credentials in `.env`
-- Wait for MySQL to be fully initialized (check logs: `docker-compose logs mysql`)
-
-### Port Conflicts
-
-- If ports 3000, 3306, or 5173 are in use, update them in `.env` and `docker-compose.yml`
-
-### Frontend Can't Connect to Backend
-
-- Verify `VITE_API_URL` in `frontend/.env` points to the correct backend URL
-- Check CORS settings in the backend if running on different domains
-
-## 📄 License
-
-This project is for educational/demonstration purposes.
-
-## 🤝 Contributing
-
-This is a demonstration project. Feel free to fork and modify as needed.
+1.  Enter Email/Password.
+2.  System validates credentials.
+3.  Enter OTP: **123456**.
+4.  Access Dashboard.
