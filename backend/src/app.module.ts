@@ -20,20 +20,31 @@ import { PerformanceModule } from './performance/performance.module';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get<string>('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 3306),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // Setting to true for dev/prototype velocity
-        // IMPORTANT for Aiven
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const host = configService.get<string>('DB_HOST', 'localhost');
+        const port = parseInt(configService.get<string>('DB_PORT', '3306'), 10);
+        const username = configService.get<string>('DB_USER');
+        const database = configService.get<string>('DB_NAME');
+
+        console.log(
+          `Attempting DB Connection: Host=${host}, Port=${port}, User=${username}, DB=${database}`,
+        );
+
+        return {
+          type: 'mysql',
+          host,
+          port,
+          username,
+          password: configService.get<string>('DB_PASSWORD'),
+          database,
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: true, // Setting to true for dev/prototype velocity
+          // IMPORTANT for Aiven
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     AuthModule,
