@@ -3,11 +3,11 @@ import {
   attendanceService,
   type AttendanceRecord,
 } from "../services/attendanceService";
-import { useAppSelector } from "../hooks/useRedux";
+// import { useAppSelector } from "../hooks/useRedux";
 import { useToast } from "../context/ToastContext";
 
 const Attendance: React.FC = () => {
-  const { user } = useAppSelector((state) => state.auth);
+  // const { user } = useAppSelector((state) => state.auth); // user unused
   const [logs, setLogs] = useState<AttendanceRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);

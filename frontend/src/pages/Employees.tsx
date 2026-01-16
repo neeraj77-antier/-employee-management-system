@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { employeeService, type Employee } from "../services/employeeService";
-import {
-  departmentService,
-  type Department,
-} from "../services/departmentService";
+// import {
+//   departmentService,
+//   type Department,
+// } from "../services/departmentService";
 import AddEmployeeModal from "../components/employees/AddEmployeeModal";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { useAppSelector } from "../hooks/useRedux";
@@ -13,7 +13,7 @@ const Employees: React.FC = () => {
   const { addToast } = useToast();
   const { user } = useAppSelector((state) => state.auth);
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
+  // const [departments, setDepartments] = useState<Department[]>([]); // Unused
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -22,7 +22,7 @@ const Employees: React.FC = () => {
 
   useEffect(() => {
     fetchEmployees();
-    fetchDepartments();
+    // fetchDepartments(); // Unused
   }, []);
 
   const fetchEmployees = async () => {
@@ -37,14 +37,7 @@ const Employees: React.FC = () => {
     }
   };
 
-  const fetchDepartments = async () => {
-    try {
-      const data = await departmentService.getAll();
-      setDepartments(data);
-    } catch (err) {
-      console.error("Failed to fetch departments:", err);
-    }
-  };
+  // const fetchDepartments = async () => { ... } removed
 
   const handleDelete = (id: number) => {
     setEmployeeToDelete(id);

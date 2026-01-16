@@ -9,7 +9,7 @@ const PayrollPage: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [payrolls, setPayrolls] = useState<Payroll[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState(""); // Unused
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [showMarkPaidModal, setShowMarkPaidModal] = useState(false);
   const [markPaidId, setMarkPaidId] = useState<number | null>(null);
@@ -40,7 +40,7 @@ const PayrollPage: React.FC = () => {
   const fetchPayroll = async () => {
     try {
       setLoading(true);
-      setError("");
+      // setError("");
       let data;
       if (user?.role === "ADMIN") {
         data = await payrollService.getAll(selectedYear, selectedMonth);
@@ -50,7 +50,7 @@ const PayrollPage: React.FC = () => {
       setPayrolls(data);
     } catch (err: any) {
       console.error(err);
-      setError("No records found or failed to fetch.");
+      // setError("No records found or failed to fetch.");
     } finally {
       setLoading(false);
     }

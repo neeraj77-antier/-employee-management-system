@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "../constants";
 import { useAppDispatch } from "../hooks/useRedux";
 import { setCredentials } from "../store/slices/authSlice";
 import OtpVerificationModal from "../components/auth/OtpVerificationModal";
-import { useToast } from "../context/ToastContext";
+// import { useToast } from "../context/ToastContext";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
