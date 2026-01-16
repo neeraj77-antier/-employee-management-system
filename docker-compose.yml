@@ -1,0 +1,86 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: emp_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - emp_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: emp_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - emp_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: emp_backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT}:3000"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=3000
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - emp_network
+    command: npm run start:dev
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: emp_frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT}:5173"
+    environment:
+      - VITE_API_URL=http://localhost:${BACKEND_PORT}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - emp_network
+    command: npm run dev -- --host
+
+networks:
+  emp_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
