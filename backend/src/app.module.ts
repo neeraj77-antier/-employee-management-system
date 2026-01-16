@@ -29,6 +29,10 @@ import { PerformanceModule } from './performance/performance.module';
         database: configService.get<string>('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true, // Setting to true for dev/prototype velocity
+        // IMPORTANT for Aiven
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
       inject: [ConfigService],
     }),
